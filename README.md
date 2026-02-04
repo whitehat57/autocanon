@@ -42,14 +42,14 @@ Struktur ini menangkap informasi penting tentang setiap permintaan HTTP untuk an
 ### 1. Fase Inisialisasi
 - Parsing flag baris perintah untuk mengkonfigurasi benchmark
 - Validasi URL target
-- Inisialisasi channel untuk komunikasi antara pekerja dan thread utama
+- Inisialisasi channel untuk komunikasi antara worker dan thread utama
 - Siapkan histogram HDR untuk pengumpulan metrik
 - Buat konteks dengan pembatalan untuk shutdown yang mulus
 
-### 2. Fase Peluncuran Pekerja
-- Hitung jumlah total pekerja konkuren berdasarkan klien × faktor pipelining
-- Luncurkan goroutine pekerja menggunakan fungsi `runWorkers`
-- Setiap pekerja mempertahankan klien HTTP sendiri dengan pooling koneksi
+### 2. Fase Peluncuran workers
+- Hitung jumlah total workers concurrent berdasarkan klien × faktor pipelining
+- Luncurkan goroutine workers menggunakan fungsi `runWorkers`
+- Setiap worker mempertahankan klien HTTP sendiri dengan pooling koneksi
 
 ### 3. Fase Eksekusi Benchmark
 - Mulai timer untuk durasi yang ditentukan
@@ -59,18 +59,18 @@ Struktur ini menangkap informasi penting tentang setiap permintaan HTTP untuk an
 - Tangani sinyal timeout dan pembatalan
 
 ### 4. Fase Pemrosesan Hasil
-- Hentikan semua pekerja secara mulus
-- Tunggu sebentar untuk menguras respons tersisa dari channel
+- Hentikan semua workers secara mulus
+- Tunggu sebentar untuk drain respons tersisa dari channel
 - Hitung dan tampilkan metrik statistik
 - Cetak statistik ringkasan termasuk jumlah kesalahan
 
 ## Detail Implementasi Teknis
 
-### Model Konkurensi
+### Model concurrency
 Alat ini menggunakan goroutine dan channel Go untuk pemrosesan konkuren:
 - Banyak goroutine pekerja mengeksekusi permintaan HTTP secara paralel
-- Channel (`respChan`, `errChan`) memfasilitasi komunikasi antara pekerja dan thread utama
-- Konteks dengan pembatalan memungkinkan shutdown mulus semua pekerja
+- Channel (`respChan`, `errChan`) memfasilitasi komunikasi antara worker dan thread utama
+- Konteks dengan pembatalan memungkinkan shutdown mulus semua workers
 
 ### Konfigurasi Klien HTTP
 - Menggunakan `fasthttp.Client` untuk operasi HTTP berkinerja tinggi
