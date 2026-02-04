@@ -1,4 +1,4 @@
-# Alat Pengujian Benchmark Autocanon - Dokumentasi Teknis
+# Alat Pengujian Benchmark Autocanon
 
 ## Gambaran Umum
 
